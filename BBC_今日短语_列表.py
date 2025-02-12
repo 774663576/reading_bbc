@@ -25,10 +25,10 @@ class ArticleInfo:
     pdf_url: str
     update_time: str
     views: int
-    category: str = "take-away-english"  # 添加默认值
+    category: str = "todays-phrase"  # 添加默认值
 
 class BBCLearningEnglishScraper:
-    def __init__(self, category: str = 'take-away-english', start_pos: int = 0, count: int = 50):
+    def __init__(self, category: str = 'todays-phrase', start_pos: int = 0, count: int = 50):
         """初始化爬虫配置"""
         self.base_url = 'https://www.bbc.co.uk'
         self.category = category
@@ -115,7 +115,7 @@ class BBCLearningEnglishScraper:
 
     def get_cover_image_url(self, article_soup: BeautifulSoup, base_url: str) -> str:
         """获取封面图片URL"""
-        audio_player = article_soup.find('div', class_='audio-player')
+        audio_player = article_soup.find('div', class_='image-single')
         if audio_player:
             img = audio_player.find('img')
             if img and img.get('src'):
@@ -149,7 +149,7 @@ class BBCLearningEnglishScraper:
 
     def process_images(self, article_soup: BeautifulSoup, base_url: str, base_name: str) -> BeautifulSoup:
         """处理audio-player类中的图片，将src改为与cover相同的格式"""
-        audio_player = article_soup.find('div', class_='audio-player')
+        audio_player = article_soup.find('div', class_='image-single')
         if audio_player:
             img = audio_player.find('img')
             if img and img.get('src'):
@@ -335,13 +335,13 @@ class BBCLearningEnglishScraper:
 def main():
     # 创建爬虫实例，设置限制为50篇文章
     scraper = BBCLearningEnglishScraper(
-        category='take-away-english',
+        category='todays-phrase',
         start_pos=0,  #从第0篇开始
         count=499 #499       # 爬取50篇文章
     )
     
     # 列表页URL
-    list_url = 'https://www.bbc.co.uk/learningenglish/chinese/features/take-away-english'
+    list_url = 'https://www.bbc.co.uk/learningenglish/chinese/features/todays-phrase'
     
     # 开始爬取
     articles = scraper.scrape_all_articles(list_url)

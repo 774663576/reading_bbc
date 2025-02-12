@@ -22,13 +22,14 @@ class ArticleInfo:
     title: str  # 格式: title_en=title_cn
     cover: str  # 封面图片地址
     mp3_url: str
+    mp4_url: str
     pdf_url: str
     update_time: str
     views: int
-    category: str = "take-away-english"  # 添加默认值
+    category: str = "english-at-work"  # 添加默认值
 
 class BBCLearningEnglishScraper:
-    def __init__(self, category: str = 'take-away-english', start_pos: int = 0, count: int = 50):
+    def __init__(self, category: str = 'english-at-work', start_pos: int = 0, count: int = 50):
         """初始化爬虫配置"""
         self.base_url = 'https://www.bbc.co.uk'
         self.category = category
@@ -115,16 +116,17 @@ class BBCLearningEnglishScraper:
 
     def get_cover_image_url(self, article_soup: BeautifulSoup, base_url: str) -> str:
         """获取封面图片URL"""
-        audio_player = article_soup.find('div', class_='audio-player')
+        audio_player = article_soup.find('div', class_='video-player')
         if audio_player:
             img = audio_player.find('img')
             if img and img.get('src'):
+                
                 return urljoin(base_url, img['src'])
         return ""
 
     def create_directories(self, base_name: str):
         """创建必要的目录结构"""
-        directories = ['img', 'pdf', 'mp3']
+        directories = ['img', 'pdf', 'mp3','mp4']
         for dir_name in directories:
             dir_path = os.path.join(self.base_output_dir, dir_name)
             os.makedirs(dir_path, exist_ok=True)
@@ -149,7 +151,7 @@ class BBCLearningEnglishScraper:
 
     def process_images(self, article_soup: BeautifulSoup, base_url: str, base_name: str) -> BeautifulSoup:
         """处理audio-player类中的图片，将src改为与cover相同的格式"""
-        audio_player = article_soup.find('div', class_='audio-player')
+        audio_player = article_soup.find('div', class_='video-player')
         if audio_player:
             img = audio_player.find('img')
             if img and img.get('src'):
@@ -285,6 +287,7 @@ class BBCLearningEnglishScraper:
                 title=title,
                 cover=f"https://774663576.github.io/reading_bbc/{self.base_output_dir}/img/{base_name}.jpg",
                 mp3_url=f"https://774663576.github.io/reading_bbc/{self.base_output_dir}/mp3/{base_name}.mp3",
+                mp4_url=f"https://774663576.github.io/reading_bbc/{self.base_output_dir}/mp4/{base_name}.mp4",
                 pdf_url=f"https://774663576.github.io/reading_bbc/{self.base_output_dir}/pdf/{base_name}.pdf",
                 update_time=datetime.now().strftime('%Y-%m-%d'),
                 views=random.randint(5000, 10000),
@@ -335,13 +338,13 @@ class BBCLearningEnglishScraper:
 def main():
     # 创建爬虫实例，设置限制为50篇文章
     scraper = BBCLearningEnglishScraper(
-        category='take-away-english',
+        category='english-at-work',
         start_pos=0,  #从第0篇开始
         count=499 #499       # 爬取50篇文章
     )
     
     # 列表页URL
-    list_url = 'https://www.bbc.co.uk/learningenglish/chinese/features/take-away-english'
+    list_url = 'https://www.bbc.co.uk/learningenglish/chinese/features/english-at-work'
     
     # 开始爬取
     articles = scraper.scrape_all_articles(list_url)

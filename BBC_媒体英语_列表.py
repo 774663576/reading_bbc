@@ -25,10 +25,10 @@ class ArticleInfo:
     pdf_url: str
     update_time: str
     views: int
-    category: str = "take-away-english"  # 添加默认值
+    category: str = "media-english"  # 添加默认值
 
 class BBCLearningEnglishScraper:
-    def __init__(self, category: str = 'take-away-english', start_pos: int = 0, count: int = 50):
+    def __init__(self, category: str = 'media-english', start_pos: int = 0, count: int = 50):
         """初始化爬虫配置"""
         self.base_url = 'https://www.bbc.co.uk'
         self.category = category
@@ -335,13 +335,13 @@ class BBCLearningEnglishScraper:
 def main():
     # 创建爬虫实例，设置限制为50篇文章
     scraper = BBCLearningEnglishScraper(
-        category='take-away-english',
+        category='media-english',
         start_pos=0,  #从第0篇开始
         count=499 #499       # 爬取50篇文章
     )
     
     # 列表页URL
-    list_url = 'https://www.bbc.co.uk/learningenglish/chinese/features/take-away-english'
+    list_url = 'https://www.bbc.co.uk/learningenglish/chinese/features/media-english'
     
     # 开始爬取
     articles = scraper.scrape_all_articles(list_url)
